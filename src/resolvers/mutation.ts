@@ -147,6 +147,7 @@ const createPost = async (_, { mainImageUrl, title, text }, { req }) => {
   title && (post.title = title);
   text && (post.text = text);
   await post.save();
+  return post;
 }
 
 const mutationResolvers = {
