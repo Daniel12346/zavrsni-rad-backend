@@ -23,7 +23,6 @@ type Mutation {
   ): User!
 
   createPost(
-    authorId: String!
     mainImageUrl: String
     title: String
     text: String #imageUrls: [String]

@@ -155,6 +155,7 @@ const mutationResolvers = {
     deleteUser,
     logIn,
     uploadImage,
+    createPost
   },
 };
 
