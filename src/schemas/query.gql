@@ -1,0 +1,7 @@
+type Query {
+  users: [User]!
+  posts: [Post]!
+  user(id: String): User
+  post(id: String): Post
+  me: User
+}

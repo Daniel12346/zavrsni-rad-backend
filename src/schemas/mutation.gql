@@ -1,0 +1,37 @@
+scalar Upload
+
+type MutationResult {
+  success: Boolean
+}
+
+input UserInput {
+  email: String
+  password: String
+}
+
+input MessageInput {
+  receiverId: ID
+  content: String
+}
+
+type Mutation {
+  createUser(
+    firstName: String!
+    lastName: String!
+    email: String!
+    password: String!
+  ): User!
+
+  createPost(
+    authorId: String!
+    mainImageUrl: String
+    title: String
+    text: String #imageUrls: [String]
+  ): Post!
+
+  deleteUser(id: ID): MutationResult
+
+  logIn(email: String, password: String): String
+  uploadImage(file: Upload): MutationResult
+  # updateUserData(id: ID, field: String, value: String): MutationResult
+}
