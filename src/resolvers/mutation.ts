@@ -46,8 +46,8 @@ const createUser = async (_, input: UserInput): Promise<User> => {
     }
   }
 
-  const usedEmail = await User.findOne({ where: { email: input.email } });
-  if (usedEmail) {
+  const isEmailUsed = await User.findOne({ where: { email: input.email } });
+  if (isEmailUsed) {
     throw new Error("Email already in use");
   }
 
@@ -78,18 +78,6 @@ const deleteUser = async (_, { id }): Promise<MutationResult> => {
   };
 };
 
-const updateUserData = async (_, { id, field, value }: { id: any, field: "firstName" | "lastName" | "email", value }): Promise<MutationResult> => {
-  try {
-    const user = await User.findOne({ id })
-    user[field] = value;
-    user.save();
-  } catch (e) {
-    throw e
-  }
-  return {
-    success: true,
-  };
-};
 
 
 const logIn = async (_, { email, password }, { req }: Context) => {
@@ -143,6 +131,22 @@ const uploadImage = async (_, { file }, { req }) => {
   } catch (e) {
     throw e;
   }
+}
+
+const createPost = async (_, { mainImageUrl, title, text }, { req }) => {
+
+  const post = new Post();
+  try {
+    const author = await User.findOne({ id: req.userId })
+    post.author = author;
+  } catch (e) {
+    throw new ApolloError(`user not found: ${e.message}`);
+  }
+  post.imageUrls = [];
+  mainImageUrl && (post.mainImageUrl = mainImageUrl);
+  title && (post.title = title);
+  text && (post.text = text);
+  await post.save();
 }
 
 const mutationResolvers = {
