@@ -37,6 +37,14 @@ export class User extends BaseEntity {
   @JoinTable()
   posts: Post[]
 
+  @ManyToMany(() => User, user => user.following)
+  @JoinTable()
+  followers: User[]
+
+  @ManyToMany(() => User, user => user.followers)
+  following: User[]
+  //TODO: notifications
+
 
   @BeforeInsert()
   async hash() {

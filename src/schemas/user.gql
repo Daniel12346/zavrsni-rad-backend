@@ -5,7 +5,8 @@ type User {
   email: String!
   profileImageUrl: String
   posts: [Post]!
-  # friends: [User]!
+  following: [User]!
+  followers: [User]!
 }
 
 scalar Date
