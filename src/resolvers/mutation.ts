@@ -157,6 +157,7 @@ const followUser = async (_, { id }, { req }) => {
     const userToFollow = await User.findOne({ id: id });
     me.following.push(userToFollow);
     userToFollow.followers.push(me);
+    return { success: true }
   } catch (e) {
     throw new ApolloError(e.message)
   }

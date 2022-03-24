@@ -25,14 +25,14 @@ type Mutation {
   createPost(
     mainImageUrl: String
     title: String
-    text: String 
-    #imageUrls: [String]
-  ): Post!
+    text: String
+  ): #imageUrls: [String]
+  Post!
 
   deleteUser(id: ID): MutationResult
 
   logIn(email: String, password: String): String
   uploadImage(file: Upload): MutationResult
   # updateUserData(id: ID, field: String, value: String): MutationResult
-  followUser(id: ID)
+  followUser(id: ID): MutationResult
 }
