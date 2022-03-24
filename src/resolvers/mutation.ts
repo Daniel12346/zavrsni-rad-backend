@@ -153,6 +153,7 @@ const createPost = async (_, { mainImageUrl, title, text }, { req }) => {
 
 const followUser = async (_, { id }, { req }) => {
   try {
+    //TODO: see if relations are needed in User.findOne()
     const me = await User.findOne({ id: req.userId });
     const userToFollow = await User.findOne({ id: id });
     me.following.push(userToFollow);

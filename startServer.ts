@@ -6,13 +6,14 @@ import { ApolloServer, gql } from "apollo-server-express";
 import mutationResolvers from "./src/resolvers/mutation";
 import queryResolvers from "./src/resolvers/query";
 import isAuth from "./src/middleware/auth";
-import express, { Request } from "express";
+import express, { application, Request } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import { PostgresConnectionOptions } from "typeorm/driver/postgres/PostgresConnectionOptions";
 import http from "http";
 import { User } from "./src/@types/express/entity/User";
 import { Post } from "./src/@types/express/entity/Post";
+import { ApolloServerPluginDrainHttpServer } from "apollo-server-core/dist/plugin/drainHttpServer";
 
 dotenv.config();
 
@@ -35,13 +36,12 @@ const resolvers = {
   ...mutationResolvers,
   ...queryResolvers,
 };
-const createServer = () => {
+const createServer = (httpServer) => {
   return new ApolloServer({
     typeDefs,
     resolvers,
-    playground: true,
     introspection: true,
-    uploads: false,
+    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
     context: ({ req }: { [key: string]: Request }) => ({
       req,
     }),
@@ -95,8 +95,10 @@ const ormConfig: PostgresConnectionOptions[] = [
 
 const startServer = async () => {
   const port = process.env.PORT || 8000;
+  const httpServer = http.createServer(app);
 
-  const server = createServer();
+  const server = createServer(httpServer);
+  await server.start();
   await createConnection(
     ormConfig[1]
     /*process.env.NODE_ENV === "development"
@@ -107,7 +109,6 @@ const startServer = async () => {
   );
 
 
-  const httpServer = http.createServer(app);
 
   //TOOD: custom store (redis)
 
