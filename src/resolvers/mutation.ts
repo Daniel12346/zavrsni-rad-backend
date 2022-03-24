@@ -133,6 +133,7 @@ const uploadImage = async (_, { file }, { req }) => {
   }
 }
 
+//TODO: other images
 const createPost = async (_, { mainImageUrl, title, text }, { req }) => {
 
   const post = new Post();
@@ -150,13 +151,25 @@ const createPost = async (_, { mainImageUrl, title, text }, { req }) => {
   return post;
 }
 
+const followUser = async (_, { id }, { req }) => {
+  try {
+    const me = await User.findOne({ id: req.userId });
+    const userToFollow = await User.findOne({ id: id });
+    me.following.push(userToFollow);
+    userToFollow.followers.push(me);
+  } catch (e) {
+    throw new ApolloError(e.message)
+  }
+}
+
 const mutationResolvers = {
   Mutation: {
     createUser,
     deleteUser,
     logIn,
     uploadImage,
-    createPost
+    createPost,
+    followUser
   },
 };
 

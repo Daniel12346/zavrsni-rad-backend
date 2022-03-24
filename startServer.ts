@@ -74,7 +74,7 @@ const ormConfig: PostgresConnectionOptions[] = [
     },
   },
   {
-    url: "postgres://kahbfwdptswpby:4571243f999dc4564472c7c8fee46f90d28661c42daf10b6c03c7b17cec43390@ec2-63-32-7-190.eu-west-1.compute.amazonaws.com:5432/d9gjj2loj05n0",
+    url: process.env.DATABASE_URL,
     type: "postgres",
     synchronize: true,
     port: 5432,
