@@ -14,6 +14,7 @@ import http from "http";
 import { User } from "./src/@types/express/entity/User";
 import { Post } from "./src/@types/express/entity/Post";
 import { ApolloServerPluginDrainHttpServer } from "apollo-server-core/dist/plugin/drainHttpServer";
+import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core/dist/plugin/landingPage/graphqlPlayground";
 
 dotenv.config();
 
@@ -41,7 +42,7 @@ const createServer = (httpServer) => {
     typeDefs,
     resolvers,
     introspection: true,
-    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+    plugins: [ApolloServerPluginDrainHttpServer({ httpServer }), ApolloServerPluginLandingPageGraphQLPlayground()],
     context: ({ req }: { [key: string]: Request }) => ({
       req,
     }),
