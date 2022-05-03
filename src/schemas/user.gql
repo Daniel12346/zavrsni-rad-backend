@@ -4,6 +4,7 @@ type User {
   lastName: String!
   email: String!
   profileImageUrl: String
+  backgroundImageUrl: String
   posts: [Post]!
   following: [User]!
   followers: [User]!

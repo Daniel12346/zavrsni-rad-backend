@@ -26,7 +26,6 @@ export class Post extends BaseEntity {
     @Column({ nullable: true })
     mainImageUrl: string;
 
-    //ili prazni array ?
     @ManyToOne(() => User, user => user.posts)
     author: User;
 

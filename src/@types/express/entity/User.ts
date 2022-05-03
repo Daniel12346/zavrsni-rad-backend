@@ -33,6 +33,9 @@ export class User extends BaseEntity {
   @Column({ nullable: true })
   profileImageUrl: string;
 
+  @Column({ nullable: true })
+  backgroundImageUrl: string;
+
   @OneToMany(() => Post, post => post.author)
   @JoinTable()
   posts: Post[]

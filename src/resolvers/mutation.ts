@@ -121,11 +121,24 @@ const uploadFile = async (file) => {
   });
 
 }
-const uploadImage = async (_, { file }, { req }) => {
+
+const uploadFiles = async (files) => {
+  const uploadedFiles = [];
+  files.forEach(async file => {
+    const uploadedFile = await uploadFile(file);
+    uploadedFiles.push(uploadedFile);
+  })
+  return uploadedFiles;
+}
+
+const uploadImage = async (_, { file, purpose }, { req }) => {
   try {
     const me = await User.findOne({ id: req.userId });
     const uploaded = await uploadFile(file);
-    me.profileImageUrl = uploaded.secure_url;
+    // "profile" | "background"
+    purpose === "profile" ?
+      me.profileImageUrl = uploaded.secure_url
+      : me.backgroundImageUrl = uploaded.secure_url;
     await me.save();
     return { success: true }
   } catch (e) {
@@ -133,20 +146,53 @@ const uploadImage = async (_, { file }, { req }) => {
   }
 }
 
+const uploadPostImage = async (_, { file, postId, purpose }: { file: File, postId: string, purpose: "main" | "additional" }, { req }) => {
+  try {
+    const post = await Post.findOne({ id: postId });
+    const uploaded = await uploadFile(file);
+    purpose === "main" ?
+      post.mainImageUrl = uploaded.secure_url
+      : post.imageUrls.push(uploaded.secure_url);
+    await post.save();
+    return { success: true }
+  } catch (e) {
+    throw e;
+  }
+}
+
+const uploadPostImages = async (_, { files, postId }: { files: File[], postId: string }, { req }) => {
+  try {
+    const post = await Post.findOne({ id: postId });
+    const uploadedFiles = await uploadFiles(files);
+    uploadedFiles.forEach((image => post.imageUrls.push(image.secure_url)))
+    await post.save();
+    return { success: true }
+  } catch (e) {
+    throw e;
+  }
+}
+
+
+//TODO!!!: images should be uploaded like the profile image, not just by setting the url
 //TODO: other images
-const createPost = async (_, { mainImageUrl, title, text }, { req }) => {
+const createPost = async (_, { mainImageFile, additionalImageFiles, title, text }, { req }) => {
 
   const post = new Post();
+  let uploadedMainImage;
+  let uploadedAdditionalImages;
   try {
-    const author = await User.findOne({ id: req.userId })
+    const author = await User.findOne({ id: req.userId });
     post.author = author;
+    mainImageFile && (uploadedMainImage = await uploadFile(mainImageFile));
+    additionalImageFiles && (uploadedAdditionalImages = await uploadFiles(additionalImageFiles));
   } catch (e) {
     throw new ApolloError(`user not found: ${e.message}`);
   }
-  post.imageUrls = [];
-  mainImageUrl && (post.mainImageUrl = mainImageUrl);
   title && (post.title = title);
   text && (post.text = text);
+  uploadedMainImage && (post.mainImageUrl = uploadedMainImage.secure_url);
+  uploadedAdditionalImages.forEach(image => post.imageUrls.push(image.secure_url));
+
   await post.save();
   return post;
 }
@@ -170,6 +216,8 @@ const mutationResolvers = {
     deleteUser,
     logIn,
     uploadImage,
+    uploadPostImage,
+    uploadPostImages,
     createPost,
     followUser
   },

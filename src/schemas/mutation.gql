@@ -21,18 +21,16 @@ type Mutation {
     email: String!
     password: String!
   ): User!
-
+  deleteUser(id: ID!): MutationResult
+  logIn(email: String, password: String): String
+  uploadImage(file: Upload!, purpose: String): MutationResult
+  uploadPostImage(file: Upload!, postId: ID!, purpose: String!): MutationResult
+  uploadPostImages(files: [Upload]!, postId: ID!): MutationResult
   createPost(
-    mainImageUrl: String
+    mainImageFile: Upload
+    additionalImageFiles: [Upload]
     title: String
     text: String
-  ): #imageUrls: [String]
-  Post!
-
-  deleteUser(id: ID): MutationResult
-
-  logIn(email: String, password: String): String
-  uploadImage(file: Upload): MutationResult
-  # updateUserData(id: ID, field: String, value: String): MutationResult
+  ): Post!
   followUser(id: ID): MutationResult
 }

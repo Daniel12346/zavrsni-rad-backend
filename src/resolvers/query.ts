@@ -19,9 +19,8 @@ const me = (_, __, { req }: Context) => {
     throw new AuthenticationError("Not authenticated");
   }
   //TODO: relations
-  return User.findOne({ id: req.userId }, { relations: [] });
+  return User.findOne({ id: req.userId }, { relations: ["posts", "following", "followers"] });
 };
-//finds a single user by id
 
 const user = (_, { id }: { [key: string]: string }, { req }: Context) => {
   return User.findOne({ id }, { relations: [] });
