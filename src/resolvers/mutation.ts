@@ -56,6 +56,9 @@ const createUser = async (_, input: UserInput): Promise<User> => {
   user.password = input.password;
   user.firstName = input.firstName;
   user.lastName = input.lastName;
+  user.posts = [];
+  user.followers = [];
+  user.following = [];
 
   try {
     await user.save();
@@ -174,7 +177,6 @@ const uploadPostImages = async (_, { files, postId }: { files: File[], postId: s
 
 
 //TODO!!!: images should be uploaded like the profile image, not just by setting the url
-//TODO: other images
 const createPost = async (_, { mainImageFile, additionalImageFiles, title, text }, { req }) => {
 
   const post = new Post();

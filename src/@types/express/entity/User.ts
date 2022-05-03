@@ -48,7 +48,6 @@ export class User extends BaseEntity {
   following: User[]
   //TODO: notifications
 
-
   @BeforeInsert()
   async hash() {
     this.password = await hashPassword(this.password);
