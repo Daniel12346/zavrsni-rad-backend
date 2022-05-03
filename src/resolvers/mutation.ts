@@ -192,6 +192,7 @@ const createPost = async (_, { mainImageFile, additionalImageFiles, title, text 
   }
   title && (post.title = title);
   text && (post.text = text);
+  post.imageUrls = [];
   uploadedMainImage && (post.mainImageUrl = uploadedMainImage.secure_url);
   uploadedAdditionalImages && uploadedAdditionalImages.forEach(image => post.imageUrls.push(image.secure_url));
 
