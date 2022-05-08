@@ -130,7 +130,11 @@ const uploadFiles = async (files) => {
   console.log(files);
   cloudinary.v2.config({ cloud_name: "deoaakggx", api_key: "413696494632221", api_secret: "vIruondb1MyWq_1HcHksEHRTxHk" });
   try {
-    const fileStreams: ReadStream[] = files.map(file => file.createReadStream());
+    const fileStreams = files.map(async file => {
+      const { createReadStream } = await file;
+      return createReadStream();
+    }
+    );
     return Promise.all(fileStreams.map(fileStream => {
       return new Promise<any>((resolve, reject) => {
         const cloudStream = cloudinary.v2.uploader.upload_stream((err, uploadedFile) => {
