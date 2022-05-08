@@ -112,6 +112,7 @@ const logIn = async (_, { email, password }, { req }: Context) => {
 
 
 
+
 const uploadFile = async (file) => {
   const { createReadStream } = await file;
   const fileStream: ReadStream = createReadStream();
@@ -126,13 +127,18 @@ const uploadFile = async (file) => {
 }
 
 const uploadFiles = async (files) => {
+  console.log(files);
+  cloudinary.v2.config({ cloud_name: "deoaakggx", api_key: "413696494632221", api_secret: "vIruondb1MyWq_1HcHksEHRTxHk" });
   try {
-    cloudinary.v2.config({ cloud_name: "deoaakggx", api_key: "413696494632221", api_secret: "vIruondb1MyWq_1HcHksEHRTxHk" });
-    const uploads = files.map(file => cloudinary.v2.uploader.upload(file.path))
-    const results = Promise.all(uploads);
-    console.log(files, uploads, results);
-    return results;
-
+    const fileStreams: ReadStream[] = files.map(file => file.createReadStream());
+    return Promise.all(fileStreams.map(fileStream => {
+      return new Promise<any>((resolve, reject) => {
+        const cloudStream = cloudinary.v2.uploader.upload_stream((err, uploadedFile) => {
+          err ? reject(err) : resolve(uploadedFile);
+        });
+        fileStream.pipe(cloudStream);
+      });
+    }))
   } catch (e) {
     throw new ApolloError("Files could not be uploaded: " + e.message);
   }
