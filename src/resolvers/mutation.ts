@@ -126,12 +126,17 @@ const uploadFile = async (file) => {
 }
 
 const uploadFiles = async (files) => {
-  const uploadedFiles = [];
-  files.forEach(async file => {
-    const uploadedFile = await uploadFile(file);
-    uploadedFiles.push(uploadedFile);
-  })
-  return uploadedFiles;
+  try {
+    cloudinary.v2.config({ cloud_name: "deoaakggx", api_key: "413696494632221", api_secret: "vIruondb1MyWq_1HcHksEHRTxHk" });
+    const uploads = files.map(file => cloudinary.v2.uploader.upload(file.path))
+    const results = Promise.all(uploads);
+    console.log(files, uploads, results);
+    return results;
+
+  } catch (e) {
+    throw new ApolloError("Files could not be uploaded: " + e.message);
+  }
+
 }
 
 const uploadImage = async (_, { file, purpose }, { req }) => {
@@ -196,7 +201,9 @@ const createPost = async (_, { mainImageFile, additionalImageFiles, title, text 
   uploadedMainImage && (post.mainImageUrl = uploadedMainImage.secure_url);
   uploadedAdditionalImages && uploadedAdditionalImages.forEach(image => post.imageUrls.push(image.secure_url));
 
+
   console.log(additionalImageFiles);
+  //TODO: popravit odavde
   console.log(uploadedAdditionalImages);
   console.log(post.imageUrls);
 
