@@ -23,12 +23,12 @@ const me = (_, __, { req }: Context) => {
 };
 
 const user = (_, { id }: { [key: string]: string }, { req }: Context) => {
-  return User.findOne({ id }, { relations: [] });
+  return User.findOne({ id }, { relations: ["posts", " followers", "following"] });
 };
 
 //finds all users
 const users = async () => {
-  return User.find();
+  return User.find({ relations: ["followers", "following"] });
 };
 
 

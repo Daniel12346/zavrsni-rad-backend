@@ -140,28 +140,6 @@ const uploadFiles = async (files) => {
   }
 }
 
-// const uploadFiles = async (files) => {
-//   console.log(files);
-//   cloudinary.v2.config({ cloud_name: "deoaakggx", api_key: "413696494632221", api_secret: "vIruondb1MyWq_1HcHksEHRTxHk" });
-//   try {
-//     const fileStreams = files.map(async file => {
-//       const { createReadStream } = await file;
-//       return createReadStream();
-//     }
-//     );
-//     return Promise.all(fileStreams.map(fileStream => {
-//       return new Promise<any>((resolve, reject) => {
-//         const cloudStream = cloudinary.v2.uploader.upload_stream((err, uploadedFile) => {
-//           err ? reject(err) : resolve(uploadedFile);
-//         });
-//         (await fileStream).pipe(cloudStream);
-//       });
-//     }))
-//   } catch (e) {
-//     throw new ApolloError("Files could not be uploaded: " + e.message);
-//   }
-
-// }
 
 const uploadImage = async (_, { file, purpose }, { req }) => {
   try {
@@ -224,13 +202,6 @@ const createPost = async (_, { mainImageFile, additionalImageFiles, title, text 
   post.imageUrls = [];
   uploadedMainImage && (post.mainImageUrl = uploadedMainImage.secure_url);
   uploadedAdditionalImages && uploadedAdditionalImages.forEach(image => post.imageUrls.push(image.secure_url));
-
-
-  console.log(additionalImageFiles);
-  //TODO: popravit odavde
-  console.log(uploadedAdditionalImages);
-  console.log(post.imageUrls);
-
   await post.save();
   return post;
 }
@@ -238,8 +209,8 @@ const createPost = async (_, { mainImageFile, additionalImageFiles, title, text 
 const followUser = async (_, { id }, { req }) => {
   try {
     //TODO: see if relations are needed in User.findOne()
-    const me = await User.findOne({ id: req.userId });
-    const userToFollow = await User.findOne({ id: id });
+    const me = await User.findOne({ id: req.userId }, { relations: ["followers", "following"] });
+    const userToFollow = await User.findOne({ id: id }, { relations: ["followers", "following"] });
     me.following.push(userToFollow);
     userToFollow.followers.push(me);
     return { success: true }
