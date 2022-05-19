@@ -210,9 +210,11 @@ const followUser = async (_, { id }, { req }) => {
   try {
     //TODO: see if relations are needed in User.findOne()
     const me = await User.findOne({ id: req.userId }, { relations: ["followers", "following"] });
-    const userToFollow = await User.findOne({ id: id }, { relations: ["followers", "following"] });
-    me.following.push(userToFollow);
-    userToFollow.followers.push(me);
+    const user = await User.findOne({ id: id }, { relations: ["followers", "following"] });
+    me.following.push(user);
+    user.followers.push(me);
+    await me.save();
+    await user.save();
     return { success: true }
   } catch (e) {
     throw new ApolloError(e.message)
