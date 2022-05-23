@@ -1,6 +1,7 @@
 import { User } from "../@types/express/entity/User";
 import { AuthenticationError } from "apollo-server-core";
 import { Post } from "../@types/express/entity/Post";
+import { Like } from "typeorm";
 
 
 
@@ -22,7 +23,7 @@ const me = (_, __, { req }: Context) => {
   return User.findOne({ id: req.userId }, { relations: ["posts", "following", "followers"] });
 };
 
-const user = (_, { id }: { [key: string]: string }, { req }: Context) => {
+const user = (_, { id }: any, { req }: Context) => {
   return User.findOne({ id }, { relations: ["posts", " followers", "following"] });
 };
 
@@ -31,10 +32,25 @@ const users = async () => {
   return User.find({ relations: ["followers", "following"] });
 };
 
+const usersByKey = async (_, { key }: any) => {
+  return User.find({
+    where: [
+      { firstName: Like(`%{key}%`) },
+      { lastName: Like(`%{key}%`) }]
+  })
+}
 
 const posts = async () => {
   return Post.find({ relations: ["author"] });
 };
+
+const postsByKey = async (_, { key }: any) => {
+  return Post.find({
+    where: [
+      { title: Like(`%{key}%`) },
+      { text: Like(`%{key}%`) }]
+  })
+}
 
 const post = async (_, { id }) => {
   return Post.findOne({ id }, { relations: ["author"] });
@@ -47,7 +63,9 @@ const queryResolvers = {
     user,
     users,
     post,
-    posts
+    posts,
+    usersByKey,
+    postsByKey
   },
 };
 
