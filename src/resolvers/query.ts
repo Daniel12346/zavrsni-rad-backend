@@ -35,8 +35,8 @@ const users = async () => {
 const usersByKey = async (_, { key }: any) => {
   return User.find({
     where: [
-      { firstName: Like(`%{key}%`) },
-      { lastName: Like(`%{key}%`) }]
+      { firstName: Like(`%${key}%`) },
+      { lastName: Like(`%${key}%`) }]
   })
 }
 
@@ -47,8 +47,8 @@ const posts = async () => {
 const postsByKey = async (_, { key }: any) => {
   return Post.find({
     where: [
-      { title: Like(`%{key}%`) },
-      { text: Like(`%{key}%`) }]
+      { title: Like(`%${key}%`) },
+      { text: Like(`%${key}%`) }]
   })
 }
 
