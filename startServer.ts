@@ -62,7 +62,7 @@ const ormConfig: PostgresConnectionOptions[] = [
     entities: [User, Post],
     migrations: ["src/migration/**/*.ts"],
     subscribers: ["src/subscriber/**/*.ts"],
-    synchronize: false,
+    synchronize: true,
     ssl: {
       rejectUnauthorized: false
     },
