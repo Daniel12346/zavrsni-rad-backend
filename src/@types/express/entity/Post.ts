@@ -8,7 +8,7 @@ import {
 } from "typeorm";
 import { User } from "./User";
 
-//TODO: koristit API?
+
 @Entity()
 export class Post extends BaseEntity {
     @PrimaryGeneratedColumn("uuid")
@@ -31,5 +31,9 @@ export class Post extends BaseEntity {
 
     @Column("text", { array: true })
     imageUrls: string[];
+
+    //if restrictedTo is null, the post is public (anyone can see it)
+    @Column({nullable: true })
+    restrictedTo: "SELF"|"FOLLOWERS"; 
 }
 

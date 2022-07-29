@@ -1,3 +1,4 @@
+type RestrictedTo = "PRIVATE" | "FOLLOWERS"
 type Post {
   id: ID!
   author: User!
@@ -6,5 +7,6 @@ type Post {
   title: String
   text: String
   imageUrls: [String]!
+  restrictedTo: RestrictedTo
   # location: location
 }

@@ -184,7 +184,7 @@ const uploadPostImages = async (_, { files, postId }: { files: File[], postId: s
 
 
 //TODO!!!: images should be uploaded like the profile image, not just by setting the url
-const createPost = async (_, { mainImageFile, additionalImageFiles, title, text }, { req }) => {
+const createPost = async (_, { mainImageFile, additionalImageFiles, title, text, restrictedTo }, { req }) => {
 
   const post = new Post();
   let uploadedMainImage;
@@ -200,6 +200,7 @@ const createPost = async (_, { mainImageFile, additionalImageFiles, title, text 
   title && (post.title = title);
   text && (post.text = text);
   post.imageUrls = [];
+  post.restrictedTo = restrictedTo;
   uploadedMainImage && (post.mainImageUrl = uploadedMainImage.secure_url);
   uploadedAdditionalImages && uploadedAdditionalImages.forEach(image => post.imageUrls.push(image.secure_url));
   await post.save();

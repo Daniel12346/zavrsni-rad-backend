@@ -6,4 +6,5 @@ type Query {
   me: User
   usersByKey(key: String): [User]
   postsByKey(key: String): [Post]
+  viewablePosts(restrictedTo: RestrictedTo): [Post]
 }

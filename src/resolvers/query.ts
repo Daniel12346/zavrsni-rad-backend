@@ -19,7 +19,6 @@ const me = (_, __, { req }: Context) => {
   if (!req.isAuth) {
     throw new AuthenticationError("Not authenticated");
   }
-  //TODO: relations
   return User.findOne({ id: req.userId }, { relations: ["posts", "following", "followers"] });
 };
 
@@ -40,9 +39,6 @@ const usersByKey = async (_, { key }: any) => {
   })
 }
 
-const posts = async () => {
-  return Post.find({ relations: ["author"] });
-};
 
 const postsByKey = async (_, { key }: any) => {
   return Post.find({
@@ -56,6 +52,22 @@ const post = async (_, { id }) => {
   return Post.findOne({ id }, { relations: ["author"] });
 };
 
+const posts = async () => {
+  return Post.find({ relations: ["author"] });
+};
+
+//public posts and posts shared with user by users they follow
+const viewablePosts = async (_, {showPublicPosts} , {req}: Context) => {
+  try{
+  const me= await User.findOne({ id: req.userId }, { relations: ["posts", "following", "followers"] });
+  const allPosts =await Post.find({relations: ["author, author.followers"]});
+  return allPosts.filter(post=>(showPublicPosts && !post.restrictedTo) 
+      || (post.restrictedTo === "FOLLOWERS" && post.author.followers.find(user=>user.id === me.id)))
+    }catch(e){
+    throw e;
+  }   
+}
+
 
 const queryResolvers = {
   Query: {
@@ -64,6 +76,7 @@ const queryResolvers = {
     users,
     post,
     posts,
+    viewablePosts,
     usersByKey,
     postsByKey
   },
