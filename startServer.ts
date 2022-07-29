@@ -77,7 +77,7 @@ const ormConfig: PostgresConnectionOptions[] = [
   {
     url: process.env.DATABASE_URL,
     type: "postgres",
-    synchronize: true,
+    synchronize: false,
     port: 5432,
     //TODO: test
     entities: [User, Post],
