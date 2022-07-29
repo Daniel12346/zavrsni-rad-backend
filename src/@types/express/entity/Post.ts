@@ -33,7 +33,8 @@ export class Post extends BaseEntity {
     imageUrls: string[];
 
     //if restrictedTo is null, the post is public (anyone can see it)
+    //"PRIVATE" | "FOLLOWERS"
     @Column({nullable: true })
-    restrictedTo: "SELF"|"FOLLOWERS"; 
+    restrictedTo: string; 
 }
 

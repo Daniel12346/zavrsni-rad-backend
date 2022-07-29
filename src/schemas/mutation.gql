@@ -31,7 +31,7 @@ type Mutation {
     additionalImageFiles: [Upload]
     title: String
     text: String
-    restrictedTo: RestrictedTo
+    restrictedTo: String
   ): Post!
   followUser(id: ID): MutationResult
 }
