@@ -6,5 +6,5 @@ type Query {
   me: User
   usersByKey(key: String): [User]
   postsByKey(key: String): [Post]
-  viewablePosts(showPublicPosts: String): [Post]
+  viewablePosts(showPublicPosts: Boolean): [Post]
 }
