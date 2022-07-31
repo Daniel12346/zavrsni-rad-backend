@@ -23,7 +23,7 @@ const me = (_, __, { req }: Context) => {
 };
 
 const user = (_, { id }: any, { req }: Context) => {
-  return User.findOne({ id }, { relations: ["posts", " followers", "following"] });
+  return User.findOne({ id }, { relations: ["posts", "followers", "following"] });
 };
 
 //finds all users
