@@ -62,7 +62,7 @@ const viewablePosts = async (_, {showPublicPosts} , {req}: Context) => {
   const me= await User.findOne({ id: req.userId }, { relations: ["posts", "following", "followers"] });
   const allPosts =await Post.find({relations: ["author", "author.followers"]});
   return allPosts.filter(post=>(showPublicPosts && !post.restrictedTo) 
-      || (post.restrictedTo === "FOLLOWERS" && post.author.followers.find(user=>user.id === me.id)))
+      || (post.restrictedTo === "FOLLOWERS" && (post.author?.followers?.find(user=>user.id === me.id) ?? 0)))
     }catch(e){
     throw e;
   }   

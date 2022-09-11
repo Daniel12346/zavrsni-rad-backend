@@ -22,7 +22,6 @@ const userInputSchema = yup.object().shape({
 });
 
 
-//this is a placeholder return used because graphql does not allow returning void
 interface MutationResult {
   success: boolean;
 }
@@ -183,7 +182,6 @@ const uploadPostImages = async (_, { files, postId }: { files: File[], postId: s
 }
 
 
-//TODO!!!: images should be uploaded like the profile image, not just by setting the url
 const createPost = async (_, { mainImageFile, additionalImageFiles, title, text, restrictedTo }, { req }) => {
 
   const post = new Post();
