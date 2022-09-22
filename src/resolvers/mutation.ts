@@ -72,6 +72,18 @@ const createUser = async (_, input: UserInput): Promise<User> => {
   return user;
 };
 
+const deletePost = async (_, { id }): Promise<MutationResult> => {
+  try {
+    const post = await Post.findOne({ id })
+    await Post.remove(post);
+  } catch (e) {
+    throw e
+  }
+  return {
+    success: true,
+  };
+};
+
 
 const deleteUser = async (_, { id }): Promise<MutationResult> => {
   try {
@@ -207,11 +219,27 @@ const createPost = async (_, { mainImageFile, additionalImageFiles, title, text,
 
 const followUser = async (_, { id }, { req }) => {
   try {
-    //TODO: see if relations are needed in User.findOne()
     const me = await User.findOne({ id: req.userId }, { relations: ["followers", "following"] });
     const user = await User.findOne({ id: id }, { relations: ["followers", "following"] });
     me.following.push(user);
     user.followers.push(me);
+    await me.save();
+    await user.save();
+    return { success: true }
+  } catch (e) {
+    throw new ApolloError(e.message)
+  }
+}
+
+const stopFollowingUser = async (_, { id }, { req }) => {
+  try {
+    const me = await User.findOne({ id: req.userId }, { relations: ["followers", "following"] });
+    const user = await User.findOne({ id: id }, { relations: ["followers", "following"] });
+    //removing user from my followed users
+    me.followers = me.followers.filter(follower=>follower.id != user.id);
+    //removing self from user's followers
+    user.following = user.following.filter(following=>following.id != me.id);
+    
     await me.save();
     await user.save();
     return { success: true }
@@ -229,7 +257,8 @@ const mutationResolvers = {
     uploadPostImage,
     uploadPostImages,
     createPost,
-    followUser
+    followUser,
+    stopFollowingUser
   },
 };
 

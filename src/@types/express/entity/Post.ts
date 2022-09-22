@@ -26,7 +26,7 @@ export class Post extends BaseEntity {
     @Column({ nullable: true })
     mainImageUrl: string;
 
-    @ManyToOne(() => User, user => user.posts)
+    @ManyToOne(() => User, user => user.posts, {onDelete: "CASCADE"})
     author: User;
 
     @Column("text", { array: true })

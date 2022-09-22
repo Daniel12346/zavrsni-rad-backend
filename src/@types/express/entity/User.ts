@@ -36,15 +36,15 @@ export class User extends BaseEntity {
   @Column({ nullable: true })
   backgroundImageUrl: string;
 
-  @OneToMany(() => Post, post => post.author)
+  @OneToMany(() => Post, post => post.author, {onDelete: "CASCADE"})
   @JoinTable()
   posts: Post[]
 
-  @ManyToMany(() => User, user => user.following)
+  @ManyToMany(() => User, user => user.following, {onDelete: "CASCADE"})
   @JoinTable()
   followers: User[]
 
-  @ManyToMany(() => User, user => user.followers)
+  @ManyToMany(() => User, user => user.followers, {onDelete: "CASCADE"})
   following: User[]
   //TODO: notifications
 

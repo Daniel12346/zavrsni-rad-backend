@@ -34,4 +34,5 @@ type Mutation {
     restrictedTo: String
   ): Post!
   followUser(id: ID): MutationResult
+  stopFollowingUser(id: ID): MutationResult
 }
