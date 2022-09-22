@@ -236,9 +236,9 @@ const stopFollowingUser = async (_, { id }, { req }) => {
     const me = await User.findOne({ id: req.userId }, { relations: ["followers", "following"] });
     const user = await User.findOne({ id: id }, { relations: ["followers", "following"] });
     //removing user from my followed users
-    me.followers = me.followers.filter(follower=>follower.id != user.id);
+    me.following = me.following.filter(following=>following.id != user.id);
     //removing self from user's followers
-    user.following = user.following.filter(following=>following.id != me.id);
+    user.followers = user.followers.filter(follower=>follower.id != me.id);
     
     await me.save();
     await user.save();
