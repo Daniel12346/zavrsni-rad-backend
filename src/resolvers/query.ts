@@ -44,7 +44,7 @@ const postsByKey = async (_, { key }: any) => {
   return Post.find({
     where: [
       { title: Like(`%${key}%`) },
-      { text: Like(`%${key}%`) }], relations: ["author"]
+      { text: Like(`%${key}%`) }], relations: ["author", "author.followers"]
   })
 }
 
